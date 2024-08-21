@@ -25,7 +25,7 @@ def get_section_timetable(timetable_sheet, section):
 def filter_and_blank_timetable_by_subjects(timetable, selected_subjects):
     # Iterate over each cell and blank out the ones not exactly matching the selected subjects
     for col in timetable.columns[1:]:  # Skip the first column which is the time slot
-        timetable[col] = timetable[col].apply(lambda cell: cell if any(cell.strip() == sub for sub in selected_subjects) else "")
+        timetable[col] = timetable[col].apply(lambda cell: cell if any(str(cell).strip() == sub for sub in selected_subjects) else "")
     return timetable
 
 def main():
