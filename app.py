@@ -26,14 +26,11 @@ def filter_and_blank_timetable_by_subjects(timetable, selected_subjects):
     for index, row in timetable.iterrows():
         for col in timetable.columns[1:]:  # Skip the first column (time slot)
             cell_value = str(row[col]).strip()
-            
-            # Split cell content by common delimiters like space, comma, or hyphen
-            cell_components = [comp.strip() for comp in re.split('[,;/ -]', cell_value)]
-            
-            # Check if any of the components match the selected subjects
-            if not any(comp in selected_subjects for comp in cell_components):
+
+            # If cell value does not match any of the selected subjects, blank it out
+            if not any(sub in cell_value for sub in selected_subjects):
                 timetable.at[index, col] = ""
-    
+
     return timetable
 
 def main():
