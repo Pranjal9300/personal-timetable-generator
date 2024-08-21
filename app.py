@@ -27,8 +27,8 @@ def filter_and_blank_timetable_by_subjects(timetable, selected_subjects):
         for col in timetable.columns[1:]:  # Skip the first column (time slot)
             cell_value = str(row[col]).strip()
 
-            # If cell value does not match any of the selected subjects, blank it out
-            if not any(sub in cell_value for sub in selected_subjects):
+            # Ensure only exact matches to the selected abbreviations are kept
+            if not any(cell_value == sub for sub in selected_subjects):
                 timetable.at[index, col] = ""
 
     return timetable
