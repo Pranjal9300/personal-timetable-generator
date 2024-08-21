@@ -23,12 +23,12 @@ def get_section_timetable(timetable_sheet, section):
         return None
 
 def filter_and_blank_timetable_by_subjects(timetable, selected_subjects):
-    # Iterate over each row and filter based on the selected subjects
+    # Iterate over each cell in the row and blank out cells not matching selected subjects
     for index, row in timetable.iterrows():
-        # Check if any cell in the row contains a selected subject
-        if not any(str(cell).strip() in selected_subjects for cell in row[1:]):  # Skip the first column (time slot)
-            # If no match, blank out the entire row except the time slot
-            timetable.loc[index, timetable.columns[1:]] = ""
+        for col in timetable.columns[1:]:  # Skip the first column (time slot)
+            cell_value = str(row[col]).strip()
+            if not any(cell_value == sub for sub in selected_subjects):
+                timetable.at[index, col] = ""  # Blank out the cell if it doesn't match
     return timetable
 
 def main():
@@ -62,7 +62,7 @@ def main():
                     section_timetable = get_section_timetable(timetable_sheet, selected_section)
 
                     if section_timetable is not None:
-                        # Filter the timetable row-wise and blank out unselected subjects
+                        # Filter the timetable cell-wise and blank out unselected subjects
                         personal_timetable = filter_and_blank_timetable_by_subjects(section_timetable, selected_abbreviations)
                         st.subheader("Your Personal Timetable")
                         st.dataframe(personal_timetable)
