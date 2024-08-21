@@ -16,8 +16,8 @@ def main():
 
     if uploaded_file:
         sheets = load_excel(uploaded_file)
-        timetable = sheets.get("Sheet1")
-        subjects_sheet = sheets.get("Sheet2")
+        timetable = sheets.get("MBA 2023-25_3RD SEMESTER")
+        subjects_sheet = sheets.get("FACULTY DETAILS")
 
         if timetable is not None and subjects_sheet is not None:
             st.subheader("Select Your Subjects")
