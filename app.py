@@ -63,6 +63,10 @@ def main():
                 st.subheader("Select Your Subjects")
                 # Combine course title and abbreviation for selection
                 subjects = subjects_sheet[['Cours Code', 'Course Title', 'Abbreviation']].drop_duplicates()
+                
+                # Replace abbreviations as required
+                subjects['Abbreviation'] = subjects['Abbreviation'].replace({'PB': 'PB-A', 'MAn': 'Man'})
+                
                 subjects['Display'] = subjects['Course Title'] + " (" + subjects['Abbreviation'] + ")"
                 subject_options = subjects['Display'].tolist()
 
