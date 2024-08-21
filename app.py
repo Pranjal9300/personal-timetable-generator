@@ -23,12 +23,23 @@ def get_section_timetable(timetable_sheet, section):
         return None
 
 def filter_and_blank_timetable_by_subjects(timetable, selected_subjects):
+    # Debug: Show the timetable before filtering
+    st.write("Original Timetable", timetable)
+    st.write("Selected Subjects", selected_subjects)
+    
     # Iterate over each cell in the row and blank out cells not matching selected subjects
     for index, row in timetable.iterrows():
         for col in timetable.columns[1:]:  # Skip the first column (time slot)
             cell_value = str(row[col]).strip()
+            st.write(f"Checking cell: {cell_value}")  # Debug: Output the current cell value
+            
             if not any(cell_value == sub for sub in selected_subjects):
+                st.write(f"Blanking cell: {cell_value}")  # Debug: Indicate blanking action
                 timetable.at[index, col] = ""  # Blank out the cell if it doesn't match
+    
+    # Debug: Show the timetable after filtering
+    st.write("Filtered Timetable", timetable)
+    
     return timetable
 
 def main():
@@ -56,7 +67,7 @@ def main():
 
                 if selected_subjects:
                     # Extract just the abbreviations to filter the timetable
-                    selected_abbreviations = [sub.split('(')[-1].replace(')', '') for sub in selected_subjects]
+                    selected_abbreviations = [sub.split('(')[-1].replace(')', '').strip() for sub in selected_subjects]
 
                     # Get the timetable for the selected section
                     section_timetable = get_section_timetable(timetable_sheet, selected_section)
