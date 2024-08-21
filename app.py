@@ -43,18 +43,23 @@ def main():
 
             if selected_section:
                 st.subheader("Select Your Subjects")
-                subjects = subjects_sheet[['Cours Code', 'Abbreviation']].drop_duplicates()
-                subject_options = subjects['Abbreviation'].tolist()
+                # Combine course title and abbreviation for selection
+                subjects = subjects_sheet[['Cours Code', 'Course Title', 'Abbreviation']].drop_duplicates()
+                subjects['Display'] = subjects['Course Title'] + " (" + subjects['Abbreviation'] + ")"
+                subject_options = subjects['Display'].tolist()
 
                 selected_subjects = st.multiselect("Subjects", subject_options)
 
                 if selected_subjects:
+                    # Extract just the abbreviations to filter the timetable
+                    selected_abbreviations = [sub.split('(')[-1].replace(')', '') for sub in selected_subjects]
+
                     # Get the timetable for the selected section
                     section_timetable = get_section_timetable(timetable_sheet, selected_section)
 
                     if section_timetable is not None:
                         # Filter the timetable by the selected subjects
-                        personal_timetable = filter_timetable_by_subjects(section_timetable, selected_subjects)
+                        personal_timetable = filter_timetable_by_subjects(section_timetable, selected_abbreviations)
                         st.subheader("Your Personal Timetable")
                         st.dataframe(personal_timetable)
                     else:
