@@ -22,10 +22,11 @@ def get_section_timetable(timetable_sheet, section):
     else:
         return None
 
-def filter_timetable_by_subjects(timetable, selected_subjects):
-    # Filter the timetable to only include selected subjects
-    filtered_timetable = timetable[timetable.apply(lambda row: any(sub in str(row.values) for sub in selected_subjects), axis=1)]
-    return filtered_timetable
+def filter_and_blank_timetable_by_subjects(timetable, selected_subjects):
+    # Iterate over each cell and blank out the ones not matching the selected subjects
+    for col in timetable.columns[1:]:  # Skip the first column which is the time slot
+        timetable[col] = timetable[col].apply(lambda cell: cell if any(sub in str(cell) for sub in selected_subjects) else "")
+    return timetable
 
 def main():
     st.title("Personal Timetable Generator")
@@ -58,8 +59,8 @@ def main():
                     section_timetable = get_section_timetable(timetable_sheet, selected_section)
 
                     if section_timetable is not None:
-                        # Filter the timetable by the selected subjects
-                        personal_timetable = filter_timetable_by_subjects(section_timetable, selected_abbreviations)
+                        # Filter the timetable and blank out unselected subjects
+                        personal_timetable = filter_and_blank_timetable_by_subjects(section_timetable, selected_abbreviations)
                         st.subheader("Your Personal Timetable")
                         st.dataframe(personal_timetable)
                     else:
