@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import re
 
 def load_excel(file):
     # Load the entire Excel file
@@ -22,13 +23,24 @@ def get_section_timetable(timetable_sheet, section):
     else:
         return None
 
+def clean_cell_value(cell_value):
+    # Remove text within brackets and split by '/'
+    cell_value = re.sub(r'\[.*?\]', '', cell_value)  # Remove text within square brackets
+    cell_value = re.sub(r'\(.*?\)', '', cell_value)  # Remove text within round brackets
+    cell_value = cell_value.replace('/', ' ').strip()  # Replace '/' with space and strip
+    return cell_value
+
 def filter_and_blank_timetable_by_subjects(timetable, selected_subjects):
     for index, row in timetable.iterrows():
         for col in timetable.columns[1:]:  # Skip the first column (time slot)
             cell_value = str(row[col]).strip()
+            cleaned_value = clean_cell_value(cell_value)
 
-            # If cell value does not match any of the selected subjects, blank it out
-            if not any(sub in cell_value for sub in selected_subjects):
+            # Split the cleaned cell value into abbreviations
+            cell_subjects = cleaned_value.split()
+
+            # If none of the selected subjects match the cell subjects, blank it out
+            if not any(sub in cell_subjects for sub in selected_subjects):
                 timetable.at[index, col] = ""
 
     return timetable
