@@ -8,9 +8,9 @@ def load_excel(file):
 def get_section_timetable(timetable_sheet, section):
     # Define where each section starts based on the section name
     section_start = {
-        'A': 0,
-        'B': 14,
-        'C': 28
+        'A': 2,
+        'B': 16,
+        'C': 30
     }
     
     start_row = section_start.get(section)
